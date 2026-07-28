@@ -3,34 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Frete via API na Shopee — Guia do Zero | Efeito Vendas</title>
+<title>Logística do Vendedor · Frete via API na Shopee — Guia Completo | Efeito Vendas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#07080a;--bg2:#0c0e12;--bg3:#12151b;--line:#1e222b;
-    --orange:#ff4d1c;--purple:#7B2FFF;--txt:#eef1f5;--muted:#8a93a3;--green:#22c374;
+    --orange:#ff4d1c;--purple:#7B2FFF;--txt:#eef1f5;--muted:#8a93a3;--green:#22c374;--red:#ff4d4d;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--txt);font-family:'Outfit',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:60px}
-  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+  .wrap{max-width:800px;margin:0 auto;padding:0 20px}
 
   header{padding:54px 0 40px;text-align:center;
     background:radial-gradient(circle at 50% 0%, rgba(255,77,28,.14), transparent 60%),radial-gradient(circle at 80% 20%, rgba(123,47,255,.10), transparent 55%);
     border-bottom:1px solid var(--line)}
   .brand{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:22px}
-  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,9vw,64px);line-height:.98;letter-spacing:1px;margin-bottom:16px}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,8vw,60px);line-height:.98;letter-spacing:1px;margin-bottom:16px}
   h1 span{color:var(--orange)}
-  .sub{color:var(--muted);font-size:16px;max-width:560px;margin:0 auto}
+  .sub{color:var(--muted);font-size:16px;max-width:580px;margin:0 auto}
   .tag{display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:8px 16px;border:1px solid var(--line);border-radius:100px;background:var(--bg2);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
   .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
 
   .section-label{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin:52px 0 18px;display:flex;align-items:center;gap:12px}
   .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
 
-  /* COMO FUNCIONA - fluxo */
+  /* PHASE DIVIDER */
+  .phase{margin:64px 0 8px;padding:22px 24px;border-radius:16px;background:linear-gradient(135deg,rgba(255,77,28,.12),rgba(123,47,255,.10));border:1px solid var(--line);display:flex;gap:18px;align-items:center}
+  .phase-n{flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--orange);line-height:1;width:56px;text-align:center}
+  .phase h2{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.5px;line-height:1}
+  .phase p{color:var(--muted);font-size:14px;margin-top:4px}
+
+  /* FLOW */
   .flow{display:flex;flex-direction:column;gap:12px}
   .flow-row{display:flex;gap:14px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
   .flow-ico{flex-shrink:0;width:42px;height:42px;border-radius:11px;background:var(--bg3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
@@ -42,7 +48,8 @@
   .road{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:10px 8px}
   .road a{display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:10px;text-decoration:none;color:var(--txt);transition:background .15s}
   .road a:hover{background:var(--bg3)}
-  .road-n{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;color:var(--orange)}
+  .road-n{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;color:var(--orange)}
+  .road-ph{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--purple);padding:14px 14px 6px}
   .road span{font-size:15px}
   .road small{color:var(--muted);font-size:13px;display:block;margin-top:1px}
 
@@ -50,7 +57,7 @@
   .step::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--orange),var(--purple))}
   .step-head{display:flex;gap:16px;align-items:center;margin-bottom:16px}
   .step-num{flex-shrink:0;width:48px;height:48px;border-radius:12px;background:var(--bg3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange)}
-  .step-head h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px;line-height:1.05}
+  .step-head h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px;line-height:1.05}
   .whatis{font-size:14px;color:#b9c1cd;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
   .whatis b{color:var(--purple);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px}
   .step-body{font-size:15px;color:#cfd5de}
@@ -62,8 +69,36 @@
   .note{margin-top:16px;padding:14px 16px;background:rgba(123,47,255,.08);border:1px solid rgba(123,47,255,.25);border-radius:10px;font-size:14px;color:#d8ccff;display:flex;gap:10px;align-items:flex-start}
   .note svg{flex-shrink:0;margin-top:2px}
   .critical{background:rgba(255,77,28,.08);border-color:rgba(255,77,28,.3);color:#ffd2c4}
+  .critical svg path{stroke:var(--orange)}
   .stop{background:rgba(255,77,28,.10);border:1px solid rgba(255,77,28,.4);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:14px;color:#ffd2c4;display:flex;gap:10px;align-items:flex-start}
   .stop svg{flex-shrink:0;margin-top:2px}
+
+  /* TIMELINE operacao */
+  .tl{position:relative;padding-left:26px;margin-top:8px}
+  .tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .tl-item{position:relative;margin-bottom:16px}
+  .tl-item::before{content:"";position:absolute;left:-22px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--orange)}
+  .tl-actor{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:5px;display:inline-block}
+  .a-shopee{background:rgba(255,77,28,.15);color:#ff8a63}
+  .a-voce{background:rgba(123,47,255,.15);color:#b18cff}
+  .a-transp{background:rgba(230,160,40,.15);color:#e0a828}
+  .tl-item p{font-size:14px;color:#cfd5de}
+
+  /* STATUS cards */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:560px){.two{grid-template-columns:1fr}}
+  .scard{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .scard h4{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.5px;margin-bottom:8px}
+  .scard.ok h4{color:var(--green)} .scard.bad h4{color:var(--red)}
+  .scard p{font-size:14px;color:var(--muted)}
+
+  /* COPART table */
+  .ctable{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .ctable th,.ctable td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  .ctable th{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .ctable tr:last-child td{border-bottom:none}
+  .ctable td b{color:var(--orange)}
+  .formula{font-family:'Space Mono',monospace;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:14px;color:var(--txt);line-height:1.7}
 
   .warn-grid{display:flex;flex-direction:column;gap:12px}
   .warn{display:flex;gap:14px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
@@ -88,10 +123,10 @@
 
 <header>
   <div class="wrap">
-    <div class="brand">EFEITO VENDAS · GUIA DO ZERO</div>
-    <h1>Frete via API<br>na Shopee<br><span>do começo ao fim</span></h1>
-    <p class="sub">Se você nunca fez isso, siga os passos <b>nesta ordem</b>. Cada um libera o próximo. Não pule etapas.</p>
-    <div class="tag"><span class="dot"></span> 10 passos · para iniciantes</div>
+    <div class="brand">EFEITO VENDAS · GUIA COMPLETO</div>
+    <h1>Logística do Vendedor<br><span>Frete via API na Shopee</span></h1>
+    <p class="sub">Da ativação do zero até a operação diária. Ativar é a parte fácil, o que garante que você receba está na operação e no pós-venda. Siga tudo, na ordem.</p>
+    <div class="tag"><span class="dot"></span> 4 fases · manual operacional</div>
   </div>
 </header>
 
@@ -101,230 +136,261 @@
   <div class="section-label">Primeiro, entenda o que é</div>
   <div class="flow">
     <div class="flow-row">
-      <div class="flow-ico">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="20" r="1.5" stroke="#ff4d1c" stroke-width="2"/><circle cx="17" cy="20" r="1.5" stroke="#ff4d1c" stroke-width="2"/><path d="M3 4h2l2.4 11.4a1 1 0 001 .8h8.7a1 1 0 001-.8L21 8H6" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div><b>1. O comprador escolhe seu produto</b><span>e a Shopee precisa mostrar quanto vai custar o frete.</span></div>
+      <div class="flow-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="20" r="1.5" stroke="#ff4d1c" stroke-width="2"/><circle cx="17" cy="20" r="1.5" stroke="#ff4d1c" stroke-width="2"/><path d="M3 4h2l2.4 11.4a1 1 0 001 .8h8.7a1 1 0 001-.8L21 8H6" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><b>1. O comprador informa o CEP</b><span>e a Shopee precisa mostrar o valor e o prazo do frete.</span></div>
     </div>
     <div class="flow-arrow">&#9660;</div>
     <div class="flow-row">
-      <div class="flow-ico">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4v10l-8 4-8-4z" stroke="#7B2FFF" stroke-width="2" stroke-linejoin="round"/><path d="M4 7l8 4 8-4M12 11v10" stroke="#7B2FFF" stroke-width="2" stroke-linejoin="round"/></svg>
-      </div>
-      <div><b>2. A Shopee pergunta pro seu sistema</b><span>via API — uma conexão automática entre a Shopee e o seu programa de frete.</span></div>
+      <div class="flow-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4v10l-8 4-8-4z" stroke="#7B2FFF" stroke-width="2" stroke-linejoin="round"/><path d="M4 7l8 4 8-4M12 11v10" stroke="#7B2FFF" stroke-width="2" stroke-linejoin="round"/></svg></div>
+      <div><b>2. A Shopee pergunta pro seu sistema</b><span>via API — a conexão automática entre a Shopee e a sua integradora.</span></div>
     </div>
     <div class="flow-arrow">&#9660;</div>
     <div class="flow-row">
-      <div class="flow-ico">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#22c374" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div><b>3. Seu sistema responde o valor</b><span>e o frete aparece na hora pro comprador. Você controla o preço, a transportadora e o prazo.</span></div>
+      <div class="flow-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#22c374" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><b>3. Seu sistema responde o valor e o prazo</b><span>e o frete aparece na hora. Você controla preço, transportadora e prazo — e assume o rastreio e a entrega.</span></div>
     </div>
   </div>
 
   <!-- ROADMAP -->
   <div class="section-label">O caminho completo</div>
   <div class="road">
+    <div class="road-ph">Fase 1 · Ativação</div>
     <a href="#p1"><div class="road-n">1</div><div><span>Ver se a sua loja pode usar</span><small>A Shopee precisa liberar a modalidade</small></div></a>
-    <a href="#p2"><div class="road-n">2</div><div><span>Ter uma integradora (ERP)</span><small>O sistema que vai cotar o frete</small></div></a>
-    <a href="#p3"><div class="road-n">3</div><div><span>Configurar o frete na integradora</span><small>Cadastrar suas tabelas de preço</small></div></a>
+    <a href="#p2"><div class="road-n">2</div><div><span>Escolher o sistema: ERP/Hub e TMS</span><small>Quem coteja e quem transporta</small></div></a>
+    <a href="#p3"><div class="road-n">3</div><div><span>Configurar frete e prazos na integradora</span><small>Tabelas, dimensões e prazos</small></div></a>
     <a href="#p4"><div class="road-n">4</div><div><span>Conectar a integradora à Shopee</span><small>Autorizar o acesso</small></div></a>
     <a href="#p5"><div class="road-n">5</div><div><span>Ligar o canal na Shopee</span><small>Ativar a Logística do Vendedor</small></div></a>
-    <a href="#p6"><div class="road-n">6</div><div><span>Cadastrar o frete de segurança</span><small>A tabela de contingência</small></div></a>
-    <a href="#p7"><div class="road-n">7</div><div><span>Definir os prazos</span><small>Preparação e transporte</small></div></a>
-    <a href="#p8"><div class="road-n">8</div><div><span>Marcar os produtos</span><small>Um por um, com o modelo certo</small></div></a>
-    <a href="#p9"><div class="road-n">9</div><div><span>Testar antes de confiar</span><small>Simular uma venda</small></div></a>
-    <a href="#p10"><div class="road-n">10</div><div><span>Publicar e cuidar da rotina</span><small>Rastreio e prazos são seus agora</small></div></a>
+    <a href="#p6"><div class="road-n">6</div><div><span>Tabela de contingência</span><small>O frete de segurança</small></div></a>
+    <a href="#p7"><div class="road-n">7</div><div><span>Marcar os produtos</span><small>Uma logística por anúncio</small></div></a>
+    <a href="#p8"><div class="road-n">8</div><div><span>Testar e validar o frete</span><small>Antes de publicar</small></div></a>
+    <div class="road-ph">Fase 2 · Operação diária</div>
+    <a href="#op"><div class="road-n">9</div><div><span>O fluxo de cada pedido</span><small>Do CEP à entrega</small></div></a>
+    <a href="#prazos"><div class="road-n">10</div><div><span>Prazos e status finalizador</span><small>Onde a maioria perde dinheiro</small></div></a>
+    <div class="road-ph">Fase 3 · Pós-venda</div>
+    <a href="#pos"><div class="road-n">11</div><div><span>Devoluções, reembolsos e disputas</span><small>As regras que te protegem</small></div></a>
+    <div class="road-ph">Fase 4 · Dinheiro</div>
+    <a href="#copart"><div class="road-n">12</div><div><span>Coparticipação de frete</span><small>Quanto sai do seu bolso</small></div></a>
+    <a href="#resp"><div class="road-n">13</div><div><span>Checklist de responsabilidades</span><small>Para não ser penalizado</small></div></a>
   </div>
 
-  <div class="section-label">Passo a passo</div>
+  <!-- ================= FASE 1 ================= -->
+  <div class="phase" id="fase1">
+    <div class="phase-n">1</div>
+    <div><h2>Ativação</h2><p>Ligar o frete via API do zero. Siga os passos na ordem — cada um libera o próximo.</p></div>
+  </div>
 
-  <!-- 1 -->
-  <div class="step" id="p1">
-    <div class="step-head"><div class="step-num">1</div><h2>Ver se a sua loja pode usar</h2></div>
-    <div class="whatis"><b>Por que isso é o primeiro passo</b>A Logística do Vendedor não vem ligada por padrão. A Shopee precisa liberar essa modalidade para a sua loja. Se ela não estiver liberada, nada do resto funciona.</div>
+  <div class="step" id="p1" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">1</div><h3>Ver se a sua loja pode usar</h3></div>
+    <div class="whatis"><b>Por que é o primeiro passo</b>A Logística do Vendedor não vem ligada. A Shopee precisa liberar essa modalidade para a sua loja. Sem isso, nada do resto funciona. Você também precisa ter integração com a Shopee — direta (desenvolvendo as APIs de cotação) ou, o caminho normal, através de uma integradora que já tenha essas APIs prontas.</div>
     <div class="step-body">
-      Para conferir se já está disponível:
-      <div class="path"><span>Central do Vendedor</span><span class="arrow">&rsaquo;</span><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Configuração do Canal</span></div>
+      <div class="path"><span>Central do Vendedor</span><span class="arrow">&rsaquo;</span><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Canal Logístico</span></div>
       <ol class="ol">
-        <li>Se aparecer a opção <b>Logística do Vendedor</b> na lista de canais, sua loja está liberada. Pode seguir.</li>
-        <li>Se <b>não aparecer</b>, você precisa solicitar a liberação ao suporte ou ao gerente de conta da Shopee, pedindo a ativação da modalidade "Logística do Vendedor" (logística própria).</li>
+        <li>Se aparecer <b>Logística do Vendedor</b> na lista de canais, sua loja está liberada. Pode seguir.</li>
+        <li>Se <b>não aparecer</b>, solicite a liberação ao suporte ou gerente de conta da Shopee.</li>
       </ol>
-      <div class="stop">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#ff4d1c" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round"/></svg>
-        <span><b>Não avance</b> enquanto a modalidade não estiver liberada. Sem ela, os próximos passos não terão efeito.</span>
-      </div>
+      <div class="stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#ff4d1c" stroke-width="2"/><path d="M15 9l-6 6M9 9l6 6" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round"/></svg><span>As atualizações e a entrega no prazo passam a ser responsabilidade sua. Pedidos cancelados por falha da operação não são reembolsados. Só ative sabendo disso.</span></div>
     </div>
   </div>
 
-  <!-- 2 -->
   <div class="step" id="p2">
-    <div class="step-head"><div class="step-num">2</div><h2>Ter uma integradora</h2></div>
-    <div class="whatis"><b>O que é uma integradora</b>É um sistema (também chamado de ERP ou gateway de frete) que fica entre você e a Shopee. É ele quem recebe a pergunta da Shopee e responde quanto custa o frete de cada pedido. Sem ele, não existe "frete via API".</div>
+    <div class="step-head"><div class="step-num">2</div><h3>Escolher o sistema: ERP/Hub e TMS</h3></div>
+    <div class="whatis"><b>As duas camadas da operação</b>O sistema coteja e emite etiqueta, mas não carrega a caixa. São duas funções, que podem estar em um sistema só ou em dois combinados.</div>
     <div class="step-body">
-      <ol class="ol">
-        <li>Verifique se você já usa um sistema que tenha integração de <b>cotação de frete com a Shopee</b>. Exemplos comuns: <b>Bling, Tiny, ANYMARKET, Sisfrete, Intelipost, Frenet</b>.</li>
-        <li>Se ainda não tem nenhum, contrate um deles e crie a sua conta antes de continuar.</li>
-        <li>Deixe o login e a senha da integradora à mão — você vai usar nos próximos passos.</li>
-      </ol>
+      <p style="margin-bottom:12px"><b style="color:var(--txt)">ERP ou Hub</b> — gerencia seus pedidos e faz a ponte com a Shopee. Um Hub já vem com integrações prontas com marketplaces. Exemplos conectados à Shopee: Bling, TF ERP, Anymarket, Olist, UpSeller, Magis5, Plugg.to, VTEX.</p>
+      <p style="margin-bottom:12px"><b style="color:var(--txt)">TMS</b> (Sistema de Gestão de Transportes) — cuida do transporte físico: cotação, negociação de tarifas, escolha de transportadora e rastreamento. Exemplos: Allpost, FreteRápido, GoFretes, Sistfrete.</p>
+      <p><b style="color:var(--txt)">Quem começa do zero</b> normalmente resolve as duas camadas com um gateway que já traz transportadoras embutidas (Correios, Jadlog, Loggi) sem contrato próprio, como Melhor Envio ou SuperFrete, plugado ao ERP. Contrato direto com transportadora vale a pena depois, no volume.</p>
+      <div class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7B2FFF" stroke-width="2"/></svg><span>Se a sua integradora/ERP/TMS precisar de suporte técnico da Shopee, o chamado é aberto na Open Platform, que é um canal à parte do atendimento ao vendedor.</span></div>
     </div>
   </div>
 
-  <!-- 3 -->
   <div class="step" id="p3">
-    <div class="step-head"><div class="step-num">3</div><h2>Configurar o frete na integradora</h2></div>
-    <div class="whatis"><b>Por que vem antes de conectar</b>A Shopee vai perguntar o valor do frete pro seu sistema. Se o seu sistema não tiver preço cadastrado, ele responde vazio e o frete não aparece. Então o preço precisa existir aqui primeiro.</div>
+    <div class="step-head"><div class="step-num">3</div><h3>Configurar frete e prazos na integradora</h3></div>
+    <div class="whatis"><b>Por que vem antes de conectar</b>A Shopee vai perguntar o frete e o prazo pro seu sistema. Se não houver preço e prazo cadastrados, ele responde vazio e o frete não aparece. Tudo isso é configurado na integradora, não no painel da Shopee.</div>
     <div class="step-body">
       <ol class="ol">
-        <li>Dentro da integradora, cadastre as suas <b>tabelas ou regras de frete</b>: transportadora, Correios, tabela própria ou gateway de cotação.</li>
-        <li>Defina como o valor é calculado (por peso, por região, por CEP).</li>
-        <li>Faça uma simulação <b>dentro da própria integradora</b> e confirme que ela devolve um valor de frete correto antes de conectar à Shopee.</li>
+        <li>Cadastre as <b>tabelas ou regras de frete</b> (transportadora, Correios, tabela própria ou gateway) e como o valor é calculado (peso, região, CEP).</li>
+        <li>Confira que as <b>dimensões dos produtos</b> na integradora batem com as cadastradas na Shopee. Divergência de dimensão trava a cotação.</li>
+        <li>Cadastre os prazos, também na integradora:
+          <div class="note" style="margin-top:10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#7B2FFF" stroke-width="2"/><path d="M3 9h18M8 3v4M16 3v4" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/></svg><span><b style="color:#d8ccff">Handling_time</b> (prazo de preparo): dias úteis para postar após a compra. Sempre &ge; 1. Máximo 30 dias. É o tempo que você tem para emitir a NF e despachar. <br><b style="color:#d8ccff">Shipping_time</b> (transporte): dias úteis da transportadora. Máximo 40 dias. <br><b style="color:#d8ccff">Promise_time</b> = preparo + transporte (é o prazo que o comprador vê).</span></div>
+        </li>
       </ol>
-      <div class="note critical">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Pular este passo é o erro mais comum. Muita gente liga o canal na Shopee sem ter frete configurado e depois não entende por que o valor aparece zerado.</span>
-      </div>
+      <div class="stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Não use a função "Pré-Encomenda" da Central do Vendedor.</b> Para logística via API, os prazos valem só os da integradora — qualquer pré-encomenda na Shopee é ignorada. Prazo em 0 faz o pedido cair como "preparo no mesmo minuto"; não cumprir gera penalidade e cancelamento.</span></div>
     </div>
   </div>
 
-  <!-- 4 -->
   <div class="step" id="p4">
-    <div class="step-head"><div class="step-num">4</div><h2>Conectar a integradora à Shopee</h2></div>
-    <div class="whatis"><b>O que é "autorizar"</b>É dar permissão para o seu sistema acessar a logística da sua loja Shopee. É como quando um app pede pra "entrar com a sua conta" — você confirma uma vez e a conexão fica ativa.</div>
+    <div class="step-head"><div class="step-num">4</div><h3>Conectar a integradora à Shopee</h3></div>
+    <div class="whatis"><b>O que é autorizar</b>É dar permissão para o seu sistema acessar a logística da sua loja Shopee. Confirma uma vez e a conexão fica ativa.</div>
     <div class="step-body">
       <ol class="ol">
-        <li>Na integradora, abra a integração da <b>Shopee</b> e procure a opção de <b>autorizar a logística</b> (o nome muda conforme o sistema: "Autorizar logística", "Integrar Logística do Vendedor", "Configurar cotação Shopee").</li>
-        <li>Clique. Você será levado para a <b>página de autorização da Shopee</b>.</li>
-        <li>Faça login na sua conta Shopee, se pedir, e <b>confirme a autorização</b>.</li>
-        <li>Aguarde voltar para a integradora com a mensagem <b>"Autorização realizada"</b>.</li>
+        <li>Na integradora, abra a integração da Shopee e procure a opção de <b>autorizar a logística</b> (o nome muda por sistema).</li>
+        <li>Clique — você vai para a <b>página de autorização da Shopee</b>.</li>
+        <li>Faça login, se pedir, e <b>confirme a autorização</b>.</li>
+        <li>Aguarde voltar com a confirmação de <b>autorização realizada</b>. Dá pra conferir depois em Central do Vendedor &rsaquo; Gerenciamento de Parceiros &rsaquo; aba "Ativo".</li>
       </ol>
     </div>
   </div>
 
-  <!-- 5 -->
   <div class="step" id="p5">
-    <div class="step-head"><div class="step-num">5</div><h2>Ligar o canal na Shopee</h2></div>
-    <div class="whatis"><b>O que muda aqui</b>Este é o botão que diz para a Shopee: "a partir de agora, quem cota o meu frete é o meu sistema".</div>
+    <div class="step-head"><div class="step-num">5</div><h3>Ligar o canal na Shopee</h3></div>
+    <div class="whatis"><b>O botão que muda tudo</b>Aqui você diz para a Shopee: "quem coteja meu frete agora é o meu sistema". Só funciona pelo computador.</div>
     <div class="step-body">
-      <div class="path"><span>Central do Vendedor</span><span class="arrow">&rsaquo;</span><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Configuração do Canal</span><span class="arrow">&rsaquo;</span><span>Logística do Vendedor</span></div>
+      <div class="path"><span>Central do Vendedor</span><span class="arrow">&rsaquo;</span><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Canal Logístico</span><span class="arrow">&rsaquo;</span><span>Logística do Vendedor</span></div>
       <ol class="ol">
-        <li>Ative o botão do canal <b>Logística do Vendedor</b>.</li>
-        <li>Confirme quando a Shopee solicitar.</li>
+        <li>Ative o botão do canal <b>Logística do Vendedor</b> e confirme.</li>
       </ol>
-      <div class="note">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7B2FFF" stroke-width="2"/></svg>
-        <span>Dependendo da integradora, a autorização do passo 4 já liga o canal automaticamente. Só confira aqui se ele aparece como ativo.</span>
-      </div>
+      <div class="stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ao migrar de canal, é obrigatório concluir pela logística anterior todos os pedidos ativos até a data de ativação. Cada anúncio permite apenas um tipo de logística.</span></div>
     </div>
   </div>
 
-  <!-- 6 -->
   <div class="step" id="p6">
-    <div class="step-head"><div class="step-num">6</div><h2>Cadastrar o frete de segurança</h2></div>
-    <div class="whatis"><b>O que é contingência</b>É um valor reserva de frete que a Shopee usa automaticamente se o seu sistema demorar demais ou falhar em responder. É a sua rede de proteção — sem ela, o frete pode zerar ou travar a venda.</div>
+    <div class="step-head"><div class="step-num">6</div><h3>Tabela de contingência</h3></div>
+    <div class="whatis"><b>O frete de segurança</b>É o valor reserva que a Shopee usa automaticamente se a sua API de cotação falhar ou ficar instável. Sem ele, o frete zera ou trava. Para funcionar, o vendedor precisa cadastrar os valores e ter o canal ativo.</div>
     <div class="step-body">
-      <div class="path"><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Configuração do Canal</span><span class="arrow">&rsaquo;</span><span>Tabela de Contingência</span></div>
-      <ol class="ol">
-        <li>Escolha preencher <b>por estado</b> (um valor por estado, mais simples) ou <b>por cidade</b> (mais detalhado).</li>
-        <li><b>Por estado:</b> selecione os estados, preencha o valor do frete e salve.</li>
-        <li><b>Por cidade:</b> selecione os estados, desligue o botão <i>"Flat rate for this area"</i>, desmarque <i>"Seller All Cities"</i>, escolha as cidades, preencha o valor em <i>Rate</i> e salve.</li>
-      </ol>
-      <div class="note">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7B2FFF" stroke-width="2"/></svg>
-        <span>Quando a contingência é acionada, o prazo de entrega fica <b>fixo</b>: mínimo de <b>10 dias corridos</b> e máximo de <b>20 dias úteis</b>. Cadastre valores realistas para não perder venda nesses casos.</span>
-      </div>
+      <div class="path"><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Canal Logístico</span><span class="arrow">&rsaquo;</span><span>Configuração do Canal</span></div>
+      <p style="margin:8px 0"><b style="color:var(--txt)">Por estado</b> (valor único): selecione os estados, preencha o valor e salve.</p>
+      <p><b style="color:var(--txt)">Por cidade</b>: selecione o estado, desligue "Frete único para região", marque as cidades, preencha o valor de cada uma e salve.</p>
+      <div class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7B2FFF" stroke-width="2"/></svg><span>Quando a contingência é acionada, o prazo fica <b>fixo</b>: mínimo <b>10 dias corridos</b>, máximo <b>20 dias úteis</b>. Cadastre valores realistas para não perder venda nesses casos.</span></div>
     </div>
   </div>
 
-  <!-- 7 -->
   <div class="step" id="p7">
-    <div class="step-head"><div class="step-num">7</div><h2>Definir os prazos</h2></div>
-    <div class="whatis"><b>O que o comprador vê</b>São os dias que aparecem no anúncio como previsão de entrega. Os dois campos são obrigatórios e contados em dias úteis.</div>
+    <div class="step-head"><div class="step-num">7</div><h3>Marcar os produtos</h3></div>
+    <div class="whatis"><b>Ligar o canal não muda os anúncios sozinho</b>Cada produto precisa estar com o modelo logístico "Logística do Vendedor". Enquanto não estiver, continua vendendo pela logística da Shopee. Lembre: cada anúncio aceita só uma logística.</div>
     <div class="step-body">
-      <ul class="ol" style="counter-reset:s">
-        <li><b>Tempo de preparação:</b> quantos dias úteis você leva para postar o pedido depois da compra.</li>
-        <li><b>Tempo de transporte:</b> quantos dias úteis a transportadora leva para entregar.</li>
-      </ul>
-      <div class="note critical">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Esses prazos são de sua responsabilidade. Curto demais gera atraso e penalidade; longo demais afasta o comprador. Use a margem real da sua operação.</span>
-      </div>
+      <ol class="ol">
+        <li>Acesse os produtos na Central do Vendedor (ou no cadastro da integradora).</li>
+        <li>Confirme, em cada anúncio, que o modelo <b>Logística do Vendedor</b> está habilitado.</li>
+      </ol>
     </div>
   </div>
 
-  <!-- 8 -->
   <div class="step" id="p8">
-    <div class="step-head"><div class="step-num">8</div><h2>Marcar os produtos</h2></div>
-    <div class="whatis"><b>Cuidado: ligar o canal não muda os anúncios sozinho</b>Cada produto precisa estar marcado com o modelo logístico "Logística do Vendedor". Enquanto não estiver, ele continua vendendo pela logística da Shopee, mesmo com tudo ativado.</div>
+    <div class="step-head"><div class="step-num">8</div><h3>Testar e validar o frete</h3></div>
+    <div class="whatis"><b>Ver com os próprios olhos antes de publicar</b>Abra um anúncio como comprador e simule a compra para um CEP qualquer. O frete precisa aparecer e bater com a sua tabela.</div>
     <div class="step-body">
-      <ol class="ol">
-        <li>Acesse os produtos na Central do Vendedor (ou no cadastro da sua integradora).</li>
-        <li>Confirme, em cada anúncio, que o modelo logístico <b>Logística do Vendedor</b> está habilitado.</li>
+      Se aparecer o erro <b>"Endereço não suportado" / "CEP não suportado"</b>, revise nesta ordem:
+      <ol class="ol" style="margin-top:8px">
+        <li><b>Tabela de frete</b>: a região do comprador está configurada na contingência?</li>
+        <li><b>Dimensões</b>: as medidas na Shopee batem com as da integradora? Qualquer divergência trava a cotação.</li>
+        <li><b>Item não ativado</b> para o canal de cotação via API.</li>
+        <li><b>Conflito de TMS</b>: você não pode ter dois sistemas de cotação ativos ao mesmo tempo — isso trava o cálculo.</li>
       </ol>
+      <div class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Verificou tudo e o erro persiste? Abra um chamado na Open Platform.</span></div>
     </div>
   </div>
 
-  <!-- 9 -->
-  <div class="step" id="p9">
-    <div class="step-head"><div class="step-num">9</div><h2>Testar antes de confiar</h2></div>
-    <div class="whatis"><b>Por que testar</b>Antes de deixar tudo no ar, você precisa ver com os próprios olhos que o frete calculado pelo seu sistema aparece certo no anúncio.</div>
+  <!-- ================= FASE 2 ================= -->
+  <div class="phase" id="op">
+    <div class="phase-n">2</div>
+    <div><h2>Operação diária</h2><p>Ativou? Agora é rodar cada pedido certo. É aqui que se decide se você recebe ou é penalizado.</p></div>
+  </div>
+
+  <div class="step" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">9</div><h3>O fluxo de cada pedido</h3></div>
     <div class="step-body">
-      <ol class="ol">
-        <li>Abra um dos seus anúncios como se fosse um comprador e simule a compra para um CEP qualquer.</li>
-        <li>Confira se o frete aparece e se o valor bate com a sua tabela.</li>
-        <li>Se aparecer <b>zerado ou estranho</b>: volte ao passo 3 (regras de frete na integradora) e ao passo 4 (autorização). É quase sempre um desses dois.</li>
+      <div class="tl">
+        <div class="tl-item"><span class="tl-actor a-shopee">Shopee</span><p>Comprador informa o CEP e a Shopee pede a cotação de frete via API.</p></div>
+        <div class="tl-item"><span class="tl-actor a-voce">Você / Integradora</span><p>A cotação é calculada e devolvida via API.</p></div>
+        <div class="tl-item"><span class="tl-actor a-shopee">Shopee</span><p>Prazos e valores são exibidos. O comprador compra e paga. Pedido vira "A ENVIAR".</p></div>
+        <div class="tl-item"><span class="tl-actor a-voce">Você / Integradora</span><p>A integradora recebe o pedido. Você fatura e envia a nota fiscal com o link de rastreio para a Shopee.</p></div>
+        <div class="tl-item"><span class="tl-actor a-transp">Transportadora</span><p>Recebe o pedido, prepara e faz a coleta.</p></div>
+        <div class="tl-item"><span class="tl-actor a-voce">Você</span><p>Pedido despachado. Você atualiza o status para "ENVIADO".</p></div>
+        <div class="tl-item"><span class="tl-actor a-transp">Transportadora</span><p>Entrega e informa os status finalizadores para a sua integradora.</p></div>
+        <div class="tl-item"><span class="tl-actor a-voce">Você</span><p>Informa o status finalizador ("Entregue" ou "Falha na entrega") para a Shopee.</p></div>
+      </div>
+      <div class="stop" style="margin-top:16px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>O <b>link de rastreio vai via API junto com o despacho</b>. Depois de despachado, não é mais possível inserir o link. Não deixe para depois.</span></div>
+    </div>
+  </div>
+
+  <div class="step" id="prazos">
+    <div class="step-head"><div class="step-num">10</div><h3>Prazos e status finalizador</h3></div>
+    <div class="whatis"><b>Onde a maioria perde dinheiro</b>Pedido entregue mas sem status atualizado pode ser cancelado sem reembolso. Essa é a parte mais importante do manual.</div>
+    <div class="step-body">
+      <p style="margin-bottom:6px"><b style="color:var(--txt)">O prazo que o comprador vê</b> é o cadastrado por você na integradora:</p>
+      <div class="formula">Maior data = data da cotação + estimativa (dias úteis)<br>Menor data = data da cotação + estimativa (dias corridos)</div>
+
+      <p style="margin:18px 0 8px"><b style="color:var(--txt)">Os dois status que finalizam o pedido:</b></p>
+      <div class="two">
+        <div class="scard ok"><h4>Entregue</h4><p>O pagamento é liberado para você após 7 dias, se o comprador não pedir devolução ou reembolso.</p></div>
+        <div class="scard bad"><h4>Falha na entrega</h4><p>O pedido é cancelado e o reembolso é liberado ao comprador.</p></div>
+      </div>
+
+      <ol class="ol" style="margin-top:16px">
+        <li>Status "CANCELADO" <b>não finaliza</b> o pedido. Se houver problema na entrega, você precisa atualizar para <b>"Falha na entrega"</b> — depois de 3 tentativas de entrega.</li>
+        <li>Faça o <b>DE/PARA</b> dos status logísticos da sua integradora para refletirem certo na Shopee.</li>
+        <li>Envie a <b>nota fiscal</b> dentro do prazo de preparo cadastrado.</li>
+        <li>Envie o <b>status finalizador</b> o quanto antes — a recomendação é até <b>5 dias</b> após a data estimada de entrega (EDD). O limite antes do sistema marcar sozinho como "Entregue" é <b>15 dias corridos</b> após a EDD.</li>
       </ol>
+
+      <div class="stop" style="margin-top:16px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Não atualizar no prazo tem duas consequências: <b>Penalidade por Atraso</b> (pedido sem status finalizador até a EDD) e <b>Taxa de Não Envio (TNE)</b>, se o comprador abrir reembolso por "não recebimento" e for aprovado. Ambas impactam suas métricas.</span></div>
     </div>
   </div>
 
-  <!-- 10 -->
-  <div class="step" id="p10">
-    <div class="step-head"><div class="step-num">10</div><h2>Publicar e cuidar da rotina</h2></div>
-    <div class="whatis"><b>O que muda no seu dia a dia</b>A partir de agora, a entrega é responsabilidade sua. Isso pede uma rotina nova.</div>
+  <!-- ================= FASE 3 ================= -->
+  <div class="phase" id="pos">
+    <div class="phase-n">3</div>
+    <div><h2>Pós-venda</h2><p>Devoluções, reembolsos e disputas. Saber as regras aqui é o que te protege de prejuízo.</p></div>
+  </div>
+
+  <div class="step" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">11</div><h3>Devoluções, reembolsos e disputas</h3></div>
     <div class="step-body">
-      <ul class="ol" style="counter-reset:s">
-        <li>Poste cada pedido no prazo e <b>informe o código de rastreio</b> na Shopee. Sem rastreio no prazo, a conta corre risco de penalidade.</li>
-        <li>Se você está migrando de outro canal, <b>despache pela logística Shopee</b> todos os pedidos que entraram até a data da ativação. A troca não vale para trás.</li>
-        <li>Acompanhe as primeiras vendas de perto para confirmar que o frete e os prazos estão saindo certos.</li>
-      </ul>
+      <p style="margin-bottom:12px"><b style="color:var(--txt)">Cenários mais comuns</b> quando o comprador abre solicitação:</p>
+      <ol class="ol">
+        <li><b>Entregue + arrependimento:</b> a Shopee aprova o retorno e reembolsa. Você organiza a devolução.</li>
+        <li><b>Entregue + produto errado/avariado/faltando:</b> a Shopee pede evidências do comprador e analisa.</li>
+        <li><b>Entregue + "não recebi":</b> a Shopee pede o comprovante de entrega. Você tem <b>7 dias úteis</b> para responder. Sem comprovante, o reembolso é aprovado.</li>
+        <li><b>Pedido atrasado:</b> a Shopee aprova o reembolso e você deve barrar a entrega do item.</li>
+      </ol>
+
+      <div class="stop" style="margin-top:16px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>A regra de ouro:</b> nunca organize a coleta direto com o comprador antes de a solicitação estar formalmente <b>APROVADA</b> no sistema da Shopee. Se coletar antes, a responsabilidade de negociar e reembolsar passa a ser 100% sua.</span></div>
+
+      <p style="margin:20px 0 8px"><b style="color:var(--txt)">Disputa</b> é quando você não concorda com o reembolso e apresenta suas evidências à Shopee. Abra sempre que houver dificuldade de concluir a coleta. Motivos válidos: produto devolvido avariado, embalagem vazia ou com itens faltando, produto diferente do enviado, não concordar com as taxas, ou não ter conseguido coletar com o comprador (esse último recomendado para logística própria).</p>
+
+      <details style="margin-top:12px"><summary>Como abrir uma disputa <span class="plus">+</span></summary><p>Central do Vendedor &rsaquo; Retornos e Pedidos cancelados &rsaquo; localize o pedido &rsaquo; na coluna "Ações" escolha a opção correspondente (ex.: "Realizei a coleta, mas tive um problema") &rsaquo; Confirmar. Ou clique no ID da Solicitação &rsaquo; Contestação &rsaquo; selecione o motivo, descreva e anexe fotos/vídeos &rsaquo; Prosseguir. Fotos e vídeos com detalhes aceleram a análise.</p></details>
+      <details><summary>Prazos importantes do pós-venda <span class="plus">+</span></summary><p>Garantia Shopee: solicitações abertas fora de 12 dias corridos são negadas. Prazo para o vendedor abrir disputa: 12 dias corridos a partir da abertura pelo comprador. Se você abre disputa e o comprador não responde em 2 dias, a Shopee cancela a solicitação; se responder, a Shopee libera mais 10 dias para o seller agendar e coletar.</p></details>
     </div>
   </div>
 
-  <!-- LEMBRETES -->
-  <div class="section-label">Nunca esqueça</div>
+  <!-- ================= FASE 4 ================= -->
+  <div class="phase" id="copart">
+    <div class="phase-n">4</div>
+    <div><h2>Dinheiro</h2><p>Quanto o frete via API custa e como conferir no relatório.</p></div>
+  </div>
+
+  <div class="step" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">12</div><h3>Coparticipação de frete</h3></div>
+    <div class="whatis"><b>O que sai do seu bolso</b>Para deixar o frete mais atrativo, a Shopee dá um desconto ao comprador. Parte desse desconto é dividida com você — mas só quando o comprador usa cupom de frete.</div>
+    <div class="step-body">
+      <p style="margin-bottom:6px"><b style="color:var(--txt)">A divisão: 75% Shopee + 25% Vendedor.</b> A sua parte é limitada a R$10 por pedido.</p>
+      <table class="ctable">
+        <tr><th>Cupom de frete</th><th>Você arca com</th></tr>
+        <tr><td>R$20</td><td><b>R$5,00</b></td></tr>
+        <tr><td>R$30</td><td><b>R$7,50</b></td></tr>
+        <tr><td>R$40</td><td><b>R$10,00</b> (teto)</td></tr>
+      </table>
+      <ol class="ol" style="margin-top:16px">
+        <li>Sem cupom de frete, <b>não há coparticipação</b>. Você só divide quando o comprador usa cupom.</li>
+        <li>O valor da coparticipação da Shopee entra para você como <b>renda do pedido</b>.</li>
+        <li>Os <b>percentuais de comissão não mudam</b> para vendedores com API de frete.</li>
+      </ol>
+      <p style="margin:18px 0 6px"><b style="color:var(--txt)">Como conferir</b> (Central do Vendedor &rsaquo; Meus Pedidos &rsaquo; filtre a data &rsaquo; Exportar). Na planilha, use as colunas <i>Valor estimado do frete</i>, <i>Desconto de Frete Aproximado</i> e <i>Taxa de envio pagas pelo comprador</i>:</p>
+      <div class="formula">Coparticipação da loja =<br>Valor estimado do frete − Desconto de Frete Aproximado − Taxa de envio pagas pelo comprador<br><br>Exemplo: frete R$100, cupom R$40, pago pelo comprador R$60<br>&rarr; sua parte = 25% de R$40 = <b style="color:var(--orange)">R$10</b></div>
+    </div>
+  </div>
+
+  <!-- RESPONSABILIDADES -->
+  <div class="section-label" id="resp">Checklist de responsabilidades</div>
   <div class="warn-grid">
-    <div class="warn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="#8a93a3" stroke-width="2"/><path d="M4 9h16" stroke="#8a93a3" stroke-width="2"/></svg>
-      <div><b>Faça tudo no computador</b><span>Ativação, autorização e contingência não funcionam pelo aplicativo. Use o navegador em um computador.</span></div>
-    </div>
-    <div class="warn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 7h13v10H3zM16 10h3l2 3v4h-5" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="#7B2FFF" stroke-width="2"/><circle cx="17.5" cy="18" r="1.6" stroke="#7B2FFF" stroke-width="2"/></svg>
-      <div><b>O rastreio agora é seu</b><span>Todo pedido precisa de código de rastreio postado no prazo. Essa responsabilidade deixa de ser da Shopee.</span></div>
-    </div>
-    <div class="warn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div><b>Siga a ordem dos passos</b><span>Pular o passo 3 (frete na integradora) faz o valor aparecer zerado. A ordem existe por um motivo.</span></div>
-    </div>
+    <div class="warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#22c374"/><path d="M8 12l3 3 5-6" stroke="#07080a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Status sempre atualizado</b><span>Envie o status finalizador dentro do prazo. Garanta o DE/PARA correto.</span></div></div>
+    <div class="warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#22c374"/><path d="M8 12l3 3 5-6" stroke="#07080a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Link de rastreio no despacho</b><span>Envie via API junto com o envio. Depois não dá mais.</span></div></div>
+    <div class="warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#22c374"/><path d="M8 12l3 3 5-6" stroke="#07080a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Tabelas e prazos atualizados</b><span>Mantenha frete e prazos sempre em dia na integradora.</span></div></div>
+    <div class="warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#22c374"/><path d="M8 12l3 3 5-6" stroke="#07080a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Aguarde a aprovação da Shopee</b><span>Nunca agende coleta antes de a devolução ser aprovada.</span></div></div>
+    <div class="warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#22c374"/><path d="M8 12l3 3 5-6" stroke="#07080a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Dispute quando precisar</b><span>Dificuldade para coletar? Abra disputa em até 12 dias corridos.</span></div></div>
+    <div class="warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#22c374"/><path d="M8 12l3 3 5-6" stroke="#07080a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Responsável pela reversa</b><span>Você organiza a logística reversa dos pedidos.</span></div></div>
+    <div class="warn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Faça tudo no computador</b><span>Ativação, autorização e contingência não funcionam pelo app.</span></div></div>
   </div>
-
-  <!-- FAQ -->
-  <div class="section-label">Dúvidas rápidas</div>
-  <details>
-    <summary>A opção "Logística do Vendedor" não aparece pra mim. <span class="plus">+</span></summary>
-    <p>A modalidade ainda não foi liberada para a sua loja (passo 1). Ela é concedida apenas a lojas autorizadas. Solicite a liberação ao suporte ou ao gerente de conta da Shopee antes de seguir.</p>
-  </details>
-  <details>
-    <summary>Fiz tudo, mas o frete aparece zerado. <span class="plus">+</span></summary>
-    <p>Na maioria das vezes é o passo 3: não há tabela de frete cadastrada na integradora, então ela responde vazio. Verifique também se a autorização do passo 4 foi concluída e se a contingência do passo 6 está preenchida.</p>
-  </details>
-  <details>
-    <summary>Ativei o canal mas os anúncios não mudaram. <span class="plus">+</span></summary>
-    <p>Os produtos não estão marcados com o modelo logístico "Logística do Vendedor" (passo 8). Enquanto não estiverem, continuam vendendo pela logística da Shopee.</p>
-  </details>
-  <details>
-    <summary>Posso voltar para a logística da Shopee depois? <span class="plus">+</span></summary>
-    <p>Sim, dá para alternar o canal de envio. Só lembre que a troca não é retroativa: pedidos já em andamento seguem a regra do canal em que entraram.</p>
-  </details>
 
   <footer>
     <div class="fbrand">EFEITO <span>VENDAS</span></div>
