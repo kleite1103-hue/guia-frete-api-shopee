@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frete via API com Intelipost — Passo a Passo do Zero | Efeito Vendas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#07080a;--bg2:#0c0e12;--bg3:#12151b;--line:#1e222b;--orange:#ff4d1c;--purple:#7B2FFF;--txt:#eef1f5;--muted:#8a93a3;--green:#22c374;--amber:#e0a828}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:'Outfit',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+  .wrap{max-width:800px;margin:0 auto;padding:0 20px}
+  header{padding:54px 0 40px;text-align:center;background:radial-gradient(circle at 50% 0%, rgba(255,77,28,.14), transparent 60%),radial-gradient(circle at 80% 20%, rgba(123,47,255,.10), transparent 55%);border-bottom:1px solid var(--line)}
+  .brand{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:22px}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,8vw,58px);line-height:.98;letter-spacing:1px;margin-bottom:16px}
+  h1 span{color:var(--orange)}
+  .sub{color:var(--muted);font-size:16px;max-width:560px;margin:0 auto}
+  .tag{display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:8px 16px;border:1px solid var(--line);border-radius:100px;background:var(--bg2);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .section-label{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin:52px 0 18px;display:flex;align-items:center;gap:12px}
+  .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* TRES SISTEMAS */
+  .sys{display:flex;flex-direction:column;gap:12px}
+  .syscard{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start}
+  .sysico{flex-shrink:0;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px}
+  .i-shopee{background:rgba(255,77,28,.15);color:#ff8a63} .i-erp{background:rgba(123,47,255,.15);color:#b18cff} .i-inteli{background:rgba(230,160,40,.15);color:#e0a828}
+  .syscard h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.5px;margin-bottom:3px}
+  .syscard .role{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .syscard p{font-size:14px;color:#cfd5de}
+  .diagram{margin-top:14px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center;font-family:'Space Mono',monospace;font-size:13px;color:var(--txt);line-height:2.2}
+  .diagram b{padding:4px 10px;border-radius:6px}
+  .d-shopee{background:rgba(255,77,28,.15);color:#ff8a63} .d-erp{background:rgba(123,47,255,.15);color:#b18cff} .d-inteli{background:rgba(230,160,40,.15);color:#e0a828}
+  .diagram .ar{color:var(--orange)}
+
+  .road{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:10px 8px}
+  .road a{display:flex;gap:14px;align-items:center;padding:11px 14px;border-radius:10px;text-decoration:none;color:var(--txt);transition:background .15s}
+  .road a:hover{background:var(--bg3)}
+  .road-n{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;color:var(--orange)}
+  .road-ph{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--purple);padding:14px 14px 6px}
+  .road span{font-size:15px} .road small{color:var(--muted);font-size:13px;display:block;margin-top:1px}
+
+  .stage{margin:64px 0 8px;padding:22px 24px;border-radius:16px;background:linear-gradient(135deg,rgba(255,77,28,.12),rgba(123,47,255,.10));border:1px solid var(--line);display:flex;gap:18px;align-items:center}
+  .stage-n{flex-shrink:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--orange);text-transform:uppercase}
+  .stage h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.5px;line-height:1}
+  .stage p{color:var(--muted);font-size:14px;margin-top:2px}
+
+  .step{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:26px 24px;margin-bottom:16px;position:relative;overflow:hidden;scroll-margin-top:20px}
+  .step::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--orange),var(--purple))}
+  .step-head{display:flex;gap:16px;align-items:center;margin-bottom:16px}
+  .step-num{flex-shrink:0;width:48px;height:48px;border-radius:12px;background:var(--bg3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange)}
+  .step-head h3{font-family:'Bebas Neue',sans-serif;font-size:25px;letter-spacing:.5px;line-height:1.05}
+  .badge{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:5px;margin-bottom:12px}
+  .b-shopee{background:rgba(255,77,28,.15);color:#ff8a63} .b-erp{background:rgba(123,47,255,.15);color:#b18cff} .b-inteli{background:rgba(230,160,40,.15);color:#e0a828} .b-todos{background:rgba(34,195,116,.15);color:#54d99a}
+  .whatis{font-size:14px;color:#b9c1cd;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+  .whatis b{color:var(--purple);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px}
+  .step-body{font-size:15px;color:#cfd5de}
+  .path{font-family:'Space Mono',monospace;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:14px 0;color:var(--txt);word-break:break-word;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .path .arrow{color:var(--orange);font-weight:700}
+  .ol{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .ol li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;font-size:15px;color:#cfd5de}
+  .ol li::before{content:counter(s);flex-shrink:0;font-family:'Space Mono',monospace;font-size:12px;width:22px;height:22px;border-radius:6px;background:var(--bg3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--purple);margin-top:1px}
+  .note{margin-top:16px;padding:14px 16px;background:rgba(123,47,255,.08);border:1px solid rgba(123,47,255,.25);border-radius:10px;font-size:14px;color:#d8ccff;display:flex;gap:10px;align-items:flex-start}
+  .note svg{flex-shrink:0;margin-top:2px}
+  .stop{background:rgba(255,77,28,.10);border:1px solid rgba(255,77,28,.4);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:14px;color:#ffd2c4;display:flex;gap:10px;align-items:flex-start}
+  .stop svg{flex-shrink:0;margin-top:2px}
+  footer{margin-top:60px;padding-top:34px;border-top:1px solid var(--line);text-align:center}
+  footer a{color:var(--orange);text-decoration:none;font-size:14px;font-family:'Space Mono',monospace}
+  footer .fbrand{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-top:22px}
+  footer .fbrand span{color:var(--orange)}
+  footer p{color:var(--muted);font-size:13px;margin-top:8px;font-family:'Space Mono',monospace;letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">EFEITO VENDAS · CONFIGURAÇÃO INTELIPOST</div>
+    <h1>Frete via API<br>com <span>Intelipost</span></h1>
+    <p class="sub">Passo a passo do zero absoluto. Antes de configurar, você precisa entender uma coisa: são três sistemas trabalhando juntos.</p>
+    <div class="tag"><span class="dot"></span> Do zero · Intelipost + ERP</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- TRES SISTEMAS -->
+  <div class="section-label">Primeiro: os 3 sistemas e o que cada um faz</div>
+  <div class="sys">
+    <div class="syscard">
+      <div class="sysico i-shopee">S</div>
+      <div><div class="role">A vitrine</div><h3>Shopee</h3><p>Onde o cliente compra. Ela pergunta o frete, recebe o pedido e cobra de você a nota fiscal e o status da entrega.</p></div>
+    </div>
+    <div class="syscard">
+      <div class="sysico i-erp">ERP</div>
+      <div><div class="role">O cérebro do pedido</div><h3>ERP / Hub</h3><p>Ex.: Bling, Tiny, Anymarket. Recebe o pedido da Shopee, emite a nota fiscal e devolve o rastreio e o status "entregue / falha" pra Shopee. Sem ele, não tem NF e o pedido não fecha.</p></div>
+    </div>
+    <div class="syscard">
+      <div class="sysico i-inteli">INT</div>
+      <div><div class="role">O motor do frete</div><h3>Intelipost</h3><p>Calcula quanto custa o frete (a cotação), escolhe a transportadora, gera a etiqueta e acompanha a entrega. Ela conecta direto na Shopee só pra parte de calcular o frete.</p></div>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <b class="d-shopee">SHOPEE</b> <span class="ar">&harr;</span> <b class="d-erp">ERP</b> <span class="ar">&harr;</span> <b class="d-inteli">INTELIPOST</b><br>
+    <span style="font-size:12px;color:var(--muted)">pedido &amp; nota fiscal &amp; status &nbsp;·&nbsp; cotação &amp; transporte</span><br>
+    <b class="d-shopee">SHOPEE</b> <span class="ar">&harr;</span> <b class="d-inteli">INTELIPOST</b><br>
+    <span style="font-size:12px;color:var(--muted)">cálculo do frete (cotação direta)</span>
+  </div>
+
+  <div class="note" style="margin-top:14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4M12 8h.01" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7B2FFF" stroke-width="2"/></svg><span>Resumindo: a <b>Intelipost cuida do frete</b>, o <b>ERP cuida do pedido e da nota</b>. Os dois são necessários. Um não substitui o outro.</span></div>
+
+  <!-- ROADMAP -->
+  <div class="section-label">O caminho completo</div>
+  <div class="road">
+    <div class="road-ph">Etapa A · Abrir as contas</div>
+    <a href="#p1"><div class="road-n">1</div><div><span>Confirmar liberação na Shopee</span><small>O gate: sem isso nada funciona</small></div></a>
+    <a href="#p2"><div class="road-n">2</div><div><span>Ter um ERP que emita nota fiscal</span><small>O cérebro do pedido</small></div></a>
+    <a href="#p3"><div class="road-n">3</div><div><span>Abrir a conta Intelipost pela Shopee</span><small>É uma conta especial, não a comum</small></div></a>
+    <div class="road-ph">Etapa B · Configurar a Intelipost</div>
+    <a href="#p4"><div class="road-n">4</div><div><span>Cadastrar transportadoras e ativar tabelas</span><small>Colocar em vigência</small></div></a>
+    <a href="#p5"><div class="road-n">5</div><div><span>Cadastrar caixas e prazo de manuseio</span><small>A cubagem do frete</small></div></a>
+    <a href="#p6"><div class="road-n">6</div><div><span>Vincular a empresa de faturamento</span><small>Senão a cotação não sai</small></div></a>
+    <div class="road-ph">Etapa C · Configurar o ERP e conectar</div>
+    <a href="#p7"><div class="road-n">7</div><div><span>Conectar a Intelipost dentro do ERP</span><small>Ligar as duas camadas</small></div></a>
+    <a href="#p8"><div class="road-n">8</div><div><span>Dimensões batendo nos 3 sistemas</span><small>O erro nº 1 de cotação</small></div></a>
+    <a href="#p9"><div class="road-n">9</div><div><span>Conectar o ERP à Shopee</span><small>Autorizar o pedido</small></div></a>
+    <div class="road-ph">Etapa D · Configurar a Shopee</div>
+    <a href="#p10"><div class="road-n">10</div><div><span>Ligar o canal Logística do Vendedor</span></div></a>
+    <a href="#p11"><div class="road-n">11</div><div><span>Tabela de contingência</span><small>O frete de segurança</small></div></a>
+    <a href="#p12"><div class="road-n">12</div><div><span>Marcar os produtos</span></div></a>
+    <div class="road-ph">Etapa E · Testar e rodar</div>
+    <a href="#p13"><div class="road-n">13</div><div><span>Testar a cotação</span><small>Simular uma compra</small></div></a>
+    <a href="#p14"><div class="road-n">14</div><div><span>Rodar um pedido de ponta a ponta</span></div></a>
+  </div>
+
+  <!-- ETAPA A -->
+  <div class="stage" id="etapaA"><div><div class="stage-n">Etapa A</div><h2>Abrir as contas</h2><p>Antes de configurar qualquer coisa, você precisa ter as três peças na mão.</p></div></div>
+
+  <div class="step" id="p1" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">1</div><h3>Confirmar a liberação na Shopee</h3></div>
+    <span class="badge b-shopee">na Shopee</span>
+    <div class="whatis"><b>Por que é o primeiro passo</b>A Logística do Vendedor não vem ligada. A Shopee precisa liberar essa modalidade para a loja. Se não estiver liberada, nada mais funciona.</div>
+    <div class="step-body">
+      <div class="path"><span>Central do Vendedor</span><span class="arrow">&rsaquo;</span><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Canal Logístico</span></div>
+      <ol class="ol">
+        <li>Se aparecer <b>Logística do Vendedor</b> na lista, está liberada. Siga em frente.</li>
+        <li>Se não aparecer, peça a liberação ao suporte ou gerente de conta da Shopee.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" id="p2">
+    <div class="step-head"><div class="step-num">2</div><h3>Ter um ERP que emita nota fiscal</h3></div>
+    <span class="badge b-erp">o ERP</span>
+    <div class="whatis"><b>O que é um ERP</b>É o sistema que gerencia seus pedidos e emite a nota fiscal. Na Logística do Vendedor você é obrigado a emitir NF e a informar o status da entrega — e a Intelipost não faz isso. Por isso o ERP é indispensável.</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>Verifique se o cliente já usa um ERP que integra com a Shopee e emite NF (ex.: <b>Bling, Tiny/Olist, Anymarket</b>).</li>
+        <li>Se não tiver, contrate um antes de continuar. Prefira um que já tenha integração nativa com a Intelipost — o Bling e o Tiny têm.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" id="p3">
+    <div class="step-head"><div class="step-num">3</div><h3>Abrir a conta Intelipost pela Shopee</h3></div>
+    <span class="badge b-inteli">na Intelipost</span>
+    <div class="whatis"><b>Atenção: não é uma conta comum</b>A conta Intelipost para vender em marketplace é aberta por um processo específico do próprio marketplace. Não adianta criar uma conta avulsa.</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>Abra a solicitação de criação de conta Intelipost <b>pelo processo da Shopee</b> (a Intelipost tem um artigo com o passo a passo para cada marketplace).</li>
+        <li>Depois de enviar, a conta é criada e você recebe os dados de acesso por e-mail <b>em até 48 horas</b>.</li>
+        <li>A <b>chave de API (API Key)</b> da sua conta é enviada <b>diretamente para a Shopee</b> — é isso que liga a cotação do frete entre os dois. Você não precisa copiar e colar nada nesse ponto.</li>
+      </ol>
+      <div class="stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#ff4d1c" stroke-width="2"/><path d="M12 8v4M12 16h.01" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round"/></svg><span>Aguarde receber o acesso antes de seguir. Sem a conta ativa, os próximos passos não têm onde ser feitos.</span></div>
+    </div>
+  </div>
+
+  <!-- ETAPA B -->
+  <div class="stage" id="etapaB"><div><div class="stage-n">Etapa B</div><h2>Configurar a Intelipost</h2><p>Ensinar o motor do frete a calcular. Sem preço cadastrado aqui, o frete não aparece.</p></div></div>
+
+  <div class="step" id="p4" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">4</div><h3>Cadastrar transportadoras e ativar as tabelas</h3></div>
+    <span class="badge b-inteli">na Intelipost</span>
+    <div class="whatis"><b>O que é isso</b>É aqui que você diz quais transportadoras vai usar (Correios, Jadlog, Loggi...) e por quanto. Sem tabela ativa, a Intelipost não tem o que responder pra Shopee.</div>
+    <div class="step-body">
+      <div class="path"><span>Menu</span><span class="arrow">&rsaquo;</span><span>Transportadoras</span><span class="arrow">&rsaquo;</span><span>Minhas Transportadoras</span></div>
+      <ol class="ol">
+        <li>Cadastre as transportadoras que vai usar.</li>
+        <li>Toda tabela nova entra como <b>rascunho</b>. Encontre a transportadora com tabela em rascunho e clique em <b>Configurações</b> (há um contador avisando quando tem tabela pendente).</li>
+        <li>No campo Ações, escolha <b>"Colocar em vigência"</b> e confirme. Só assim a tabela passa a valer nas cotações.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" id="p5">
+    <div class="step-head"><div class="step-num">5</div><h3>Cadastrar as caixas e o prazo de manuseio</h3></div>
+    <span class="badge b-inteli">na Intelipost</span>
+    <div class="whatis"><b>Cubagem</b>É o tamanho/volume das embalagens. A Intelipost usa isso pra calcular o frete "por produto". E o prazo de manuseio é o tempo que você leva pra despachar — ele entra no prazo total que o cliente vê.</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>Cadastre as <b>caixas (cubagem)</b> no painel da Intelipost.</li>
+        <li>Defina o <b>prazo de manuseio</b> — ele será somado ao prazo de transporte na cotação (é o seu tempo de preparo).</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" id="p6">
+    <div class="step-head"><div class="step-num">6</div><h3>Vincular a empresa de faturamento</h3></div>
+    <span class="badge b-inteli">na Intelipost</span>
+    <div class="whatis"><b>Por que isso importa</b>A cotação só sai corretamente se a sua empresa de faturamento estiver vinculada à integração. É um passo pequeno que, se esquecido, faz o frete não calcular.</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>Vincule a <b>empresa de faturamento</b> à integração de e-commerce/marketplace dentro da Intelipost.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ETAPA C -->
+  <div class="stage" id="etapaC"><div><div class="stage-n">Etapa C</div><h2>Configurar o ERP e conectar tudo</h2><p>Ligar o cérebro do pedido ao motor do frete e à Shopee.</p></div></div>
+
+  <div class="step" id="p7" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">7</div><h3>Conectar a Intelipost dentro do ERP</h3></div>
+    <span class="badge b-erp">no ERP</span>
+    <div class="whatis"><b>O que isso faz</b>Ensina o ERP a usar a Intelipost pra cotar o frete de cada pedido. É a ponte entre as duas camadas.</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>No ERP, abra a área de integrações logísticas e adicione a <b>Intelipost</b>. No Bling, por exemplo, isso fica em "Minhas instalações".</li>
+        <li>Informe a <b>chave de API da Intelipost</b> (o suporte da Intelipost fornece essa chave) e ative a <b>cotação por produto</b>.</li>
+        <li>Escolha a regra de transportadora (mais barato ou mais rápido) e o CEP de origem, se o ERP pedir.</li>
+      </ol>
+      <div class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4M12 8h.01" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7B2FFF" stroke-width="2"/></svg><span>Os nomes das telas mudam conforme o ERP. O importante é o conceito: informar a chave da Intelipost e ligar a cotação por produto.</span></div>
+    </div>
+  </div>
+
+  <div class="step" id="p8">
+    <div class="step-head"><div class="step-num">8</div><h3>Dimensões batendo nos 3 sistemas</h3></div>
+    <span class="badge b-todos">nos 3</span>
+    <div class="whatis"><b>O erro nº 1 de quem configura</b>Se as medidas do produto na Shopee, no ERP e na Intelipost não forem iguais, a cotação trava e o cliente vê "endereço não suportado".</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>Confira que peso e dimensões de cada produto estão <b>iguais</b> na Shopee, no ERP e na cubagem da Intelipost.</li>
+        <li>Qualquer divergência impede o cálculo. Padronize antes de testar.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step" id="p9">
+    <div class="step-head"><div class="step-num">9</div><h3>Conectar o ERP à Shopee</h3></div>
+    <span class="badge b-erp">no ERP</span>
+    <div class="whatis"><b>Autorizar o pedido</b>É dar permissão pro ERP receber os pedidos da Shopee, emitir a NF e devolver o status. Diferente da cotação (que a Intelipost já ligou sozinha no passo 3), esta é a conexão do pedido.</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>No ERP, conecte/autorize a conta da <b>Shopee</b>, se ainda não estiver conectada.</li>
+        <li>Confirme que os pedidos da Shopee passam a entrar no ERP.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ETAPA D -->
+  <div class="stage" id="etapaD"><div><div class="stage-n">Etapa D</div><h2>Configurar a Shopee</h2><p>Ligar o canal e cadastrar as regras do lado da Shopee. Tudo pelo computador.</p></div></div>
+
+  <div class="step" id="p10" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">10</div><h3>Ligar o canal Logística do Vendedor</h3></div>
+    <span class="badge b-shopee">na Shopee</span>
+    <div class="step-body">
+      <div class="path"><span>Central do Vendedor</span><span class="arrow">&rsaquo;</span><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Canal Logístico</span><span class="arrow">&rsaquo;</span><span>Logística do Vendedor</span></div>
+      <ol class="ol"><li>Ative o botão do canal <b>Logística do Vendedor</b> e confirme.</li></ol>
+      <div class="stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Migrando de outro canal? Conclua pela logística anterior todos os pedidos ativos até a data de ativação. Cada anúncio aceita só um tipo de logística.</span></div>
+    </div>
+  </div>
+
+  <div class="step" id="p11">
+    <div class="step-head"><div class="step-num">11</div><h3>Tabela de contingência</h3></div>
+    <span class="badge b-shopee">na Shopee</span>
+    <div class="whatis"><b>O frete de segurança</b>Valor reserva que a Shopee usa se a cotação da Intelipost falhar. Sem ele, o frete zera ou trava a venda.</div>
+    <div class="step-body">
+      <div class="path"><span>Configurações de Envio</span><span class="arrow">&rsaquo;</span><span>Canal Logístico</span><span class="arrow">&rsaquo;</span><span>Configuração do Canal</span></div>
+      <p style="margin:8px 0">Preencha <b>por estado</b> (valor único) ou <b>por cidade</b> (desligue "Frete único para região", marque as cidades e preencha cada valor). Salve.</p>
+      <div class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="#7B2FFF" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#7B2FFF" stroke-width="2"/></svg><span>Quando aciona, o prazo fica fixo: mínimo 10 dias corridos, máximo 20 dias úteis. Use valores realistas.</span></div>
+    </div>
+  </div>
+
+  <div class="step" id="p12">
+    <div class="step-head"><div class="step-num">12</div><h3>Marcar os produtos</h3></div>
+    <span class="badge b-shopee">na Shopee</span>
+    <div class="whatis"><b>Ligar o canal não muda os anúncios sozinho</b>Cada produto precisa estar com o modelo "Logística do Vendedor", senão continua vendendo pela logística da Shopee.</div>
+    <div class="step-body">
+      <ol class="ol"><li>Nos produtos da Central do Vendedor (ou no ERP), confirme que cada anúncio está com <b>Logística do Vendedor</b> habilitada.</li></ol>
+    </div>
+  </div>
+
+  <!-- ETAPA E -->
+  <div class="stage" id="etapaE"><div><div class="stage-n">Etapa E</div><h2>Testar e rodar</h2><p>Ver funcionando antes de confiar, e rodar o primeiro pedido inteiro.</p></div></div>
+
+  <div class="step" id="p13" style="margin-top:16px">
+    <div class="step-head"><div class="step-num">13</div><h3>Testar a cotação</h3></div>
+    <span class="badge b-todos">validação</span>
+    <div class="step-body">
+      <ol class="ol">
+        <li>Abra um anúncio como se fosse cliente e simule a compra para um CEP qualquer.</li>
+        <li>O frete precisa aparecer e bater com a sua tabela da Intelipost.</li>
+      </ol>
+      <p style="margin-top:12px">Deu <b>"endereço não suportado"</b>? Revise nesta ordem: (1) a região está na tabela de contingência? (2) as dimensões batem nos 3 sistemas? (3) a tabela da transportadora está "em vigência"? (4) a empresa de faturamento está vinculada? (5) você não tem dois sistemas de cotação ativos ao mesmo tempo?</p>
+    </div>
+  </div>
+
+  <div class="step" id="p14">
+    <div class="step-head"><div class="step-num">14</div><h3>Rodar um pedido de ponta a ponta</h3></div>
+    <span class="badge b-todos">operação</span>
+    <div class="whatis"><b>O teste real</b>Faça (ou acompanhe) um pedido de verdade passando por todas as mãos, pra confirmar que a operação fecha.</div>
+    <div class="step-body">
+      <ol class="ol">
+        <li>Pedido entra no <b>ERP</b>. Você <b>emite a nota fiscal</b> dentro do prazo de preparo.</li>
+        <li>Gere a <b>etiqueta pela Intelipost</b> e despache. O <b>link de rastreio vai junto com o despacho</b> — depois de despachado não dá mais pra inserir.</li>
+        <li>Atualize o status para <b>"Enviado"</b>.</li>
+        <li>Ao entregar, informe o <b>status finalizador</b> ("Entregue" ou "Falha na entrega") pra Shopee, o quanto antes.</li>
+      </ol>
+      <div class="stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L14 3.9a2 2 0 00-3.4 0z" stroke="#ff4d1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Se você não informar o status finalizador, a Shopee marca como "Entregue" sozinha e a loja corre risco de cancelamento sem reembolso. Essa é a parte que mais dá prejuízo — não deixe passar.</span></div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="./index.html">&larr; Ver o manual completo da Logística do Vendedor</a>
+    <div class="fbrand">EFEITO <span>VENDAS</span></div>
+    <p>Consultoria especializada em Shopee</p>
+  </footer>
+
+</div>
+</body>
+</html>
